@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useAccount } from 'wagmi'
+import { sdk } from '@farcaster/frame-sdk'
 import Header from '@/components/Header'
 import StatsCard from '@/components/StatsCard'
 import FollowerCard from '@/components/FollowerCard'
@@ -42,6 +43,13 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [timeRange, setTimeRange] = useState<7 | 14 | 30>(7)
+
+  useEffect(() => {
+    const init = async () => {
+      await sdk.actions.ready()
+    }
+    init()
+  }, [])
 
   const fetchDashboardData = useCallback(async () => {
     if (!address) return

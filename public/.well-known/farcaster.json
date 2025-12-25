@@ -1,0 +1,26 @@
+{
+    "accountAssociation": {
+        "header": "eyJmaWQiOjEyMzQ1LCJ0eXBlIjoiY3VzdG9keSIsImtleSI6IjB4MTIzNDU2Nzg5MCJ9",
+        "payload": "eyJkb21haW4iOiJnb3RjaGEtamFkZS52ZXJjZWwuYXBwIn0",
+        "signature": "MHg..."
+    },
+    "frame": {
+        "version": "next",
+        "imageUrl": "https://gotcha-jade.vercel.app/og-image.png",
+        "button": {
+            "title": "Open App",
+            "action": {
+                "type": "launch_frame",
+                "name": "Gotcha",
+                "url": "https://gotcha-jade.vercel.app",
+                "splashImageUrl": "https://gotcha-jade.vercel.app/og-image.png",
+                "splashBackgroundColor": "#FF6B9D"
+            }
+        }
+    },
+    "name": "Gotcha",
+    "description": "Track your active followers on Farcaster",
+    "homeUrl": "https://gotcha-jade.vercel.app",
+    "iconUrl": "https://gotcha-jade.vercel.app/favicon.ico",
+    "version": "1.0.0"
+}
