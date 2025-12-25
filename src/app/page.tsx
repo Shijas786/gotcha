@@ -85,165 +85,173 @@ export default function Home() {
   }, [address, isConnected, timeRange, fetchDashboardData])
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
-      <Header />
+    <div className="min-h-screen relative">
+      {/* Decorative Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none select-none z-0">
+        <div className="absolute top-[10%] left-[5%] text-6xl opacity-20 animate-bounce" style={{ animationDuration: '3s' }}>🎯</div>
+        <div className="absolute top-[20%] right-[10%] text-6xl opacity-20 animate-bounce" style={{ animationDuration: '4s' }}>📊</div>
+        <div className="absolute bottom-[20%] left-[15%] text-6xl opacity-20 animate-bounce" style={{ animationDuration: '5s' }}>⚡</div>
+        <div className="absolute bottom-[10%] right-[15%] text-6xl opacity-20 animate-bounce" style={{ animationDuration: '3.5s' }}>🌟</div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Hero Section */}
-        {!isConnected && (
-          <div className="text-center py-20">
-            <div className="mb-8 flex justify-center">
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-[var(--primary)] via-[var(--secondary)] to-[var(--accent)] flex items-center justify-center shadow-2xl animate-pulse">
-                <span className="text-6xl">🎯</span>
+        {/* Floating Bubbles */}
+        <div className="absolute top-[30%] left-[20%] w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute bottom-[40%] right-[25%] w-48 h-48 bg-white/10 rounded-full blur-xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+      </div>
+
+      <main className="relative z-10">
+        <Header />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          {!isConnected ? (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+              <div className="space-y-6 max-w-2xl px-4 py-12 card backdrop-blur-xl bg-white/40 border-white/40">
+                <div className="w-24 h-24 bg-gradient-to-br from-pink-400 to-purple-500 rounded-3xl flex items-center justify-center text-5xl mx-auto shadow-2xl transform hover:rotate-12 transition-transform duration-300">
+                  🎯
+                </div>
+                <h2 className="text-5xl font-bold gradient-text pb-2">Welcome to Gotcha</h2>
+                <p className="text-xl text-[var(--text-secondary)] font-medium">
+                  The most vibrant way to track your Farcaster growth.
+                  Connect your wallet to see who's really engaging with you!
+                </p>
+                <div className="flex justify-center pt-4">
+                  <appkit-button />
+                </div>
               </div>
             </div>
-            <h1 className="text-5xl font-bold mb-4 gradient-text">
-              Welcome to Gotcha
-            </h1>
-            <p className="text-xl text-[var(--text-secondary)] mb-8 max-w-2xl mx-auto">
-              Discover who your most active followers are on Farcaster.
-              Track engagement, identify superfans, and grow your community! 🚀
-            </p>
-            <div className="inline-block">
-              <appkit-button />
-            </div>
-          </div>
-        )}
+          ) : (
+            <>
+              {loading && <LoadingSpinner />}
 
-        {/* Dashboard */}
-        {isConnected && (
-          <>
-            {loading && <LoadingSpinner />}
+              {error && (
+                <div className="card bg-red-50 border-red-200 text-center py-12">
+                  <span className="text-6xl mb-4 block">😕</span>
+                  <h3 className="text-xl font-semibold text-red-800 mb-2">Oops!</h3>
+                  <p className="text-red-600 mb-2">{error}</p>
+                  {error.includes('No Farcaster profile') && (
+                    <p className="text-sm text-red-500 mt-2">
+                      💡 Make sure your wallet is linked to a Farcaster account
+                    </p>
+                  )}
+                  <button
+                    onClick={fetchDashboardData}
+                    className="btn btn-primary mt-4"
+                  >
+                    Try Again
+                  </button>
+                </div>
+              )}
 
-            {error && (
-              <div className="card bg-red-50 border-red-200 text-center py-12">
-                <span className="text-6xl mb-4 block">😕</span>
-                <h3 className="text-xl font-semibold text-red-800 mb-2">Oops!</h3>
-                <p className="text-red-600 mb-2">{error}</p>
-                {error.includes('No Farcaster profile') && (
-                  <p className="text-sm text-red-500 mt-2">
-                    💡 Make sure your wallet is linked to a Farcaster account
-                  </p>
-                )}
-                <button
-                  onClick={fetchDashboardData}
-                  className="btn btn-primary mt-4"
-                >
-                  Try Again
-                </button>
-              </div>
-            )}
-
-            {!loading && !error && data && (
-              <>
-                {/* Profile Header */}
-                <div className="card mb-8">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                    <Image
-                      src={data.user.pfp_url || '/default-avatar.svg'}
-                      alt={data.user.display_name}
-                      width={96}
-                      height={96}
-                      className="avatar"
-                    />
-                    <div className="flex-1">
-                      <h2 className="text-3xl font-bold text-[var(--text-primary)] mb-1">
-                        {data.user.display_name}
-                      </h2>
-                      <p className="text-lg text-[var(--text-secondary)] mb-2">
-                        @{data.user.username}
-                      </p>
-                      {data.user.bio && (
-                        <p className="text-[var(--text-secondary)] mb-3">{data.user.bio}</p>
-                      )}
-                      <div className="flex gap-4">
-                        <div>
-                          <span className="font-bold text-[var(--text-primary)]">
-                            {data.user.follower_count.toLocaleString()}
-                          </span>
-                          <span className="text-[var(--text-muted)] ml-1">followers</span>
-                        </div>
-                        <div>
-                          <span className="font-bold text-[var(--text-primary)]">
-                            {data.user.following_count.toLocaleString()}
-                          </span>
-                          <span className="text-[var(--text-muted)] ml-1">following</span>
+              {!loading && !error && data && (
+                <>
+                  {/* Profile Header */}
+                  <div className="card mb-8">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                      <Image
+                        src={data.user.pfp_url || '/default-avatar.svg'}
+                        alt={data.user.display_name}
+                        width={96}
+                        height={96}
+                        className="avatar"
+                      />
+                      <div className="flex-1">
+                        <h2 className="text-3xl font-bold text-[var(--text-primary)] mb-1">
+                          {data.user.display_name}
+                        </h2>
+                        <p className="text-lg text-[var(--text-secondary)] mb-2">
+                          @{data.user.username}
+                        </p>
+                        {data.user.bio && (
+                          <p className="text-[var(--text-secondary)] mb-3">{data.user.bio}</p>
+                        )}
+                        <div className="flex gap-4">
+                          <div>
+                            <span className="font-bold text-[var(--text-primary)]">
+                              {data.user.follower_count.toLocaleString()}
+                            </span>
+                            <span className="text-[var(--text-muted)] ml-1">followers</span>
+                          </div>
+                          <div>
+                            <span className="font-bold text-[var(--text-primary)]">
+                              {data.user.following_count.toLocaleString()}
+                            </span>
+                            <span className="text-[var(--text-muted)] ml-1">following</span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Time Range Filter */}
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-2xl font-bold text-[var(--text-primary)]">
-                    📊 Activity Insights
-                  </h3>
-                  <div className="flex gap-2">
-                    {[7, 14, 30].map((days) => (
-                      <button
-                        key={days}
-                        onClick={() => setTimeRange(days as 7 | 14 | 30)}
-                        className={`px-4 py-2 rounded-full font-semibold text-sm transition-all ${timeRange === days
-                          ? 'bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] text-white shadow-md'
-                          : 'bg-white text-[var(--text-secondary)] border-2 border-[var(--border)] hover:border-[var(--primary)]'
-                          }`}
-                      >
-                        {days} days
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                  <StatsCard
-                    title="Total Followers"
-                    value={data.stats.total_followers.toLocaleString()}
-                    icon="👥"
-                    color="primary"
-                    subtitle="Your community size"
-                  />
-                  <StatsCard
-                    title="Active Followers"
-                    value={data.stats.active_followers.toLocaleString()}
-                    icon="⚡"
-                    color="secondary"
-                    subtitle={`Last ${timeRange} days`}
-                  />
-                  <StatsCard
-                    title="Activity Rate"
-                    value={`${data.stats.activity_rate}%`}
-                    icon="📈"
-                    color="accent"
-                    subtitle="Engagement percentage"
-                  />
-                </div>
-
-                {/* Active Followers List */}
-                <div className="mb-6">
-                  <h3 className="text-2xl font-bold text-[var(--text-primary)] mb-4">
-                    🌟 Top Active Followers
-                  </h3>
-                  {data.active_followers.length === 0 ? (
-                    <div className="card text-center py-12">
-                      <span className="text-6xl mb-4 block">🔍</span>
-                      <p className="text-[var(--text-secondary)]">
-                        No active followers found in the last {timeRange} days
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                      {data.active_followers.map((follower) => (
-                        <FollowerCard key={follower.fid} follower={follower} />
+                  {/* Time Range Filter */}
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-2xl font-bold text-[var(--text-primary)]">
+                      📊 Activity Insights
+                    </h3>
+                    <div className="flex gap-2">
+                      {[7, 14, 30].map((days) => (
+                        <button
+                          key={days}
+                          onClick={() => setTimeRange(days as 7 | 14 | 30)}
+                          className={`px-4 py-2 rounded-full font-semibold text-sm transition-all ${timeRange === days
+                            ? 'bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] text-white shadow-md'
+                            : 'bg-white text-[var(--text-secondary)] border-2 border-[var(--border)] hover:border-[var(--primary)]'
+                            }`}
+                        >
+                          {days} days
+                        </button>
                       ))}
                     </div>
-                  )}
-                </div>
-              </>
-            )}
-          </>
-        )}
+                  </div>
+
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <StatsCard
+                      title="Total Followers"
+                      value={data.stats.total_followers.toLocaleString()}
+                      icon="👥"
+                      color="primary"
+                      subtitle="Your community size"
+                    />
+                    <StatsCard
+                      title="Active Followers"
+                      value={data.stats.active_followers.toLocaleString()}
+                      icon="⚡"
+                      color="secondary"
+                      subtitle={`Last ${timeRange} days`}
+                    />
+                    <StatsCard
+                      title="Activity Rate"
+                      value={`${data.stats.activity_rate}%`}
+                      icon="📈"
+                      color="accent"
+                      subtitle="Engagement percentage"
+                    />
+                  </div>
+
+                  {/* Active Followers List */}
+                  <div className="mb-6">
+                    <h3 className="text-2xl font-bold text-[var(--text-primary)] mb-4">
+                      🌟 Top Active Followers
+                    </h3>
+                    {data.active_followers.length === 0 ? (
+                      <div className="card text-center py-12">
+                        <span className="text-6xl mb-4 block">🔍</span>
+                        <p className="text-[var(--text-secondary)]">
+                          No active followers found in the last {timeRange} days
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        {data.active_followers.map((follower) => (
+                          <FollowerCard key={follower.fid} follower={follower} />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </>
+          )}
+        </div>
       </main>
 
       {/* Footer */}
