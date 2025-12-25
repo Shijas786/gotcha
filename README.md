@@ -6,6 +6,10 @@ A Farcaster-native growth insights app that helps you discover and track your mo
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)
 
+## 🚀 Deploy to Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Shijas786/gotcha&env=NEXT_PUBLIC_PROJECT_ID,NEYNAR_API_KEY&envDescription=API%20keys%20required%20for%20Reown%20and%20Neynar&envLink=https://github.com/Shijas786/gotcha%23environment-variables)
+
 ## ✨ Features
 
 - 🔐 **Wallet Connection** - Seamless wallet connection via Reown (WalletConnect)
