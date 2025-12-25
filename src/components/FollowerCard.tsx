@@ -43,6 +43,9 @@ export default function FollowerCard({ follower }: FollowerCardProps) {
                         width={56}
                         height={56}
                         className="avatar"
+                        onError={(e) => {
+                            e.currentTarget.src = '/default-avatar.svg'
+                        }}
                     />
                 </div>
 
