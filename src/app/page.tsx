@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useAccount } from 'wagmi'
 import Header from '@/components/Header'
 import StatsCard from '@/components/StatsCard'
@@ -52,7 +52,7 @@ export default function Home() {
     }
   }, [address, isConnected, timeRange])
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     if (!address) return
 
     setLoading(true)
@@ -74,7 +74,7 @@ export default function Home() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [address, timeRange])
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
