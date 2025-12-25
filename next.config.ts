@@ -17,26 +17,13 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  webpack: (config, { isServer }) => {
-    // Externalize problematic dependencies
+  webpack: (config) => {
+    // Externalize optional dependencies that cause build issues
     config.externals.push(
       'pino-pretty',
       'lokijs',
-      'encoding',
-      'axios',
-      '@solana/kit',
-      '@solana/web3.js',
-      '@coinbase/cdp-sdk',
-      '@base-org/account'
+      'encoding'
     )
-
-    // Ignore optional dependencies
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@coinbase/cdp-sdk': false,
-      '@base-org/account': false,
-    }
-
     return config
   },
 };
