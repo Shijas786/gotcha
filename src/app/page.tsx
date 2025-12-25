@@ -50,7 +50,7 @@ export default function Home() {
       setData(null)
       setError(null)
     }
-  }, [address, isConnected, timeRange])
+  }, [address, isConnected, timeRange, fetchDashboardData])
 
   const fetchDashboardData = useCallback(async () => {
     if (!address) return

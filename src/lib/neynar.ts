@@ -32,6 +32,14 @@ export interface ActivityStats {
     activity_rate: number
 }
 
+interface Cast {
+    timestamp: string
+    parent_hash?: string
+    reactions?: {
+        likes_count?: number
+    }
+}
+
 export async function getUserByAddress(address: string): Promise<FarcasterUser | null> {
     try {
         const response = await fetch(
@@ -119,7 +127,7 @@ export async function getFollowers(fid: number, limit: number = 100): Promise<Fa
     }
 }
 
-export async function getUserCasts(fid: number, limit: number = 25): Promise<any[]> {
+export async function getUserCasts(fid: number, limit: number = 25): Promise<Cast[]> {
     try {
         const response = await fetch(
             `${NEYNAR_BASE_URL}/farcaster/feed/user/${fid}?limit=${limit}`,
@@ -163,7 +171,7 @@ export async function analyzeFollowerActivity(
             let likesCount = 0
             let lastActive = new Date(0)
 
-            casts.forEach((cast: any) => {
+            casts.forEach((cast: Cast) => {
                 const castDate = new Date(cast.timestamp)
 
                 if (castDate > cutoffDate) {
