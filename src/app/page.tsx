@@ -43,15 +43,6 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null)
   const [timeRange, setTimeRange] = useState<7 | 14 | 30>(7)
 
-  useEffect(() => {
-    if (isConnected && address) {
-      fetchDashboardData()
-    } else {
-      setData(null)
-      setError(null)
-    }
-  }, [address, isConnected, timeRange, fetchDashboardData])
-
   const fetchDashboardData = useCallback(async () => {
     if (!address) return
 
@@ -75,6 +66,15 @@ export default function Home() {
       setLoading(false)
     }
   }, [address, timeRange])
+
+  useEffect(() => {
+    if (isConnected && address) {
+      fetchDashboardData()
+    } else {
+      setData(null)
+      setError(null)
+    }
+  }, [address, isConnected, timeRange, fetchDashboardData])
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
