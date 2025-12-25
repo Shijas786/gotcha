@@ -111,7 +111,12 @@ export default function Home() {
               <div className="card bg-red-50 border-red-200 text-center py-12">
                 <span className="text-6xl mb-4 block">😕</span>
                 <h3 className="text-xl font-semibold text-red-800 mb-2">Oops!</h3>
-                <p className="text-red-600">{error}</p>
+                <p className="text-red-600 mb-2">{error}</p>
+                {error.includes('No Farcaster profile') && (
+                  <p className="text-sm text-red-500 mt-2">
+                    💡 Make sure your wallet is linked to a Farcaster account
+                  </p>
+                )}
                 <button
                   onClick={fetchDashboardData}
                   className="btn btn-primary mt-4"
