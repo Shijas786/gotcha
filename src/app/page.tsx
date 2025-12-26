@@ -43,22 +43,48 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [timeRange, setTimeRange] = useState<7 | 14 | 30>(7)
+  const [fcUser, setFcUser] = useState<any>(null)
+  const [signedInAddress, setSignedInAddress] = useState<string | null>(null)
+
+  // Use the connected wallet address or the signed-in address from Farcaster
+  const effectiveAddress = address || signedInAddress
 
   useEffect(() => {
     const init = async () => {
+      const context = await sdk.context
+      if (context?.user) {
+        setFcUser(context.user)
+      }
       await sdk.actions.ready()
     }
     init()
   }, [])
 
+  const handleSignIn = async () => {
+    try {
+      const result = await sdk.actions.signIn({
+        nonce: Math.random().toString(36).substring(2),
+        acceptAuthAddress: true
+      })
+
+      console.log('Farcaster Sign In Success:', result)
+
+      if (result.address) {
+        setSignedInAddress(result.address)
+      }
+    } catch (err) {
+      console.error('Farcaster Sign In Failed:', err)
+    }
+  }
+
   const fetchDashboardData = useCallback(async () => {
-    if (!address) return
+    if (!effectiveAddress) return
 
     setLoading(true)
     setError(null)
 
     try {
-      const response = await fetch(`/api/dashboard?address=${address}&days=${timeRange}`)
+      const response = await fetch(`/api/dashboard?address=${effectiveAddress}&days=${timeRange}`)
 
       if (!response.ok) {
         const errorData = await response.json()
@@ -73,16 +99,16 @@ export default function Home() {
     } finally {
       setLoading(false)
     }
-  }, [address, timeRange])
+  }, [effectiveAddress, timeRange])
 
   useEffect(() => {
-    if (isConnected && address) {
+    if (effectiveAddress) {
       fetchDashboardData()
     } else {
       setData(null)
       setError(null)
     }
-  }, [address, isConnected, timeRange, fetchDashboardData])
+  }, [effectiveAddress, timeRange, fetchDashboardData])
 
   return (
     <div className="min-h-screen relative">
@@ -102,7 +128,7 @@ export default function Home() {
         <Header />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          {!isConnected ? (
+          {!effectiveAddress ? (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
               <div className="space-y-6 max-w-2xl px-4 py-12 card backdrop-blur-xl bg-white/40 border-white/40">
                 <div className="w-24 h-24 bg-gradient-to-br from-pink-400 to-purple-500 rounded-3xl flex items-center justify-center text-5xl mx-auto shadow-2xl transform hover:rotate-12 transition-transform duration-300">
@@ -113,8 +139,22 @@ export default function Home() {
                   The most vibrant way to track your Farcaster growth.
                   Connect your wallet to see who&apos;s really engaging with you!
                 </p>
-                <div className="flex justify-center pt-4">
-                  <appkit-button />
+                <div className="flex flex-col items-center gap-4 pt-4">
+                  {fcUser ? (
+                    <>
+                      <button
+                        onClick={handleSignIn}
+                        className="btn btn-primary text-xl px-10 py-4"
+                      >
+                        Sign in with Farcaster
+                      </button>
+                      <p className="text-sm text-[var(--text-muted)]">
+                        Logged in as @{fcUser.username}
+                      </p>
+                    </>
+                  ) : (
+                    <appkit-button />
+                  )}
                 </div>
               </div>
             </div>

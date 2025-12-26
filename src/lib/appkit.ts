@@ -14,8 +14,8 @@ export const modal = createAppKit({
     metadata: {
         name: 'Gotcha',
         description: 'Farcaster Growth Insights',
-        url: 'https://gotcha.app',
-        icons: ['https://gotcha.app/icon.png']
+        url: 'https://gotcha-base.vercel.app',
+        icons: ['https://gotcha-base.vercel.app/icon.svg']
     },
     features: {
         analytics: true
