@@ -1,17 +1,17 @@
 {
     "accountAssociation": {
-        "header": "eyJmaWQiOjEyMzQ1LCJ0eXBlIjoiY3VzdG9keSIsImtleSI6IjB4MTIzNDU2Nzg5MCJ9",
-        "payload": "eyJkb21haW4iOiJnb3RjaGEtamFkZS52ZXJjZWwuYXBwIn0",
-        "signature": "MHg..."
+        "header": "eyJmaWQiOjI1OTkxMywidHlwZSI6ImF1dGgiLCJrZXkiOiIweDE2QmM5MDJjYzk3NDRkOThmRjAzRDEyOTA0MjVhRkQ0RDRiOTAyMWEifQ",
+        "payload": "eyJkb21haW4iOiJnb3RjaGEtYmFzZS52ZXJjZWwuYXBwIn0",
+        "signature": "dfnLQWrVdfqPo1pt1DKErL/JzretGPFh2OOSrhS2zHQ2nWiysU2xFDDL1kj94ZeB4Lwr7caQuogQRf3kmMXBtRw="
     },
     "frame": {
         "version": "1",
         "name": "Gotcha",
-        "iconUrl": "https://gotcha-jade.vercel.app/favicon.ico",
-        "homeUrl": "https://gotcha-jade.vercel.app",
-        "imageUrl": "https://gotcha-jade.vercel.app/og-image.png",
+        "iconUrl": "https://gotcha-base.vercel.app/icon.svg",
+        "homeUrl": "https://gotcha-base.vercel.app",
+        "imageUrl": "https://gotcha-base.vercel.app/og-image.png",
         "buttonTitle": "Launch Gotcha",
-        "splashImageUrl": "https://gotcha-jade.vercel.app/og-image.png",
+        "splashImageUrl": "https://gotcha-base.vercel.app/og-image.png",
         "splashBackgroundColor": "#FF6B9D"
     }
 }
