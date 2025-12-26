@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { useAccount } from 'wagmi'
 import { sdk } from '@farcaster/frame-sdk'
 import { recoverMessageAddress } from 'viem'
 import Header from '@/components/Header'
@@ -46,7 +45,6 @@ interface FarcasterUser {
 }
 
 export default function Home() {
-  const { address } = useAccount()
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -54,8 +52,8 @@ export default function Home() {
   const [fcUser, setFcUser] = useState<FarcasterUser | null>(null)
   const [signedInAddress, setSignedInAddress] = useState<string | null>(null)
 
-  // Use the connected wallet address or the signed-in address from Farcaster
-  const effectiveAddress = address || signedInAddress
+  // Exclusive Farcaster Sign In address
+  const effectiveAddress = signedInAddress
 
   useEffect(() => {
     const init = async () => {
@@ -150,7 +148,7 @@ export default function Home() {
                 <h2 className="text-5xl font-bold gradient-text pb-2">Welcome to Gotcha</h2>
                 <p className="text-xl text-[var(--text-secondary)] font-medium">
                   The most vibrant way to track your Farcaster growth.
-                  Connect your wallet to see who&apos;s really engaging with you!
+                  Sign in to see who&apos;s really engaging with you!
                 </p>
                 <div className="flex flex-col items-center gap-4 pt-4">
                   {fcUser ? (
@@ -161,12 +159,15 @@ export default function Home() {
                       >
                         Sign in with Farcaster
                       </button>
-                      <p className="text-sm text-[var(--text-muted)]">
+                      <p className="text-sm text-[var(--text-muted)] font-bold">
                         Logged in as @{fcUser.username}
                       </p>
                     </>
                   ) : (
-                    <appkit-button />
+                    <div className="card bg-amber-50 border-amber-200 text-amber-800 p-6">
+                      <p className="font-bold mb-2">🚀 Almost there!</p>
+                      <p>Please open this app inside a Farcaster client (Warpcast/Supercast) to sign in.</p>
+                    </div>
                   )}
                 </div>
               </div>

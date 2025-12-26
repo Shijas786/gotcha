@@ -1,9 +1,7 @@
 'use client'
 
-import { useAccount } from 'wagmi'
 
 export default function Header() {
-    const { address, isConnected } = useAccount()
 
     return (
         <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/60 border-b border-white/20 shadow-sm">
@@ -20,17 +18,11 @@ export default function Header() {
                         </div>
                     </div>
 
-                    {/* Wallet Connection */}
+                    {/* Profile section */}
                     <div className="flex items-center gap-4">
-                        {isConnected && address && (
-                            <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-[var(--surface-hover)] rounded-full border-2 border-[var(--border)]">
-                                <div className="w-2 h-2 rounded-full bg-[var(--success)] animate-pulse"></div>
-                                <span className="text-sm font-medium text-[var(--text-secondary)]">
-                                    {address.slice(0, 6)}...{address.slice(-4)}
-                                </span>
-                            </div>
-                        )}
-                        <appkit-button />
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#FF6B9D] to-[#4ECDC4] flex items-center justify-center text-xl shadow-sm">
+                            👤
+                        </div>
                     </div>
                 </div>
             </div>
