@@ -111,7 +111,7 @@ export default function Home() {
                 <h2 className="text-5xl font-bold gradient-text pb-2">Welcome to Gotcha</h2>
                 <p className="text-xl text-[var(--text-secondary)] font-medium">
                   The most vibrant way to track your Farcaster growth.
-                  Connect your wallet to see who's really engaging with you!
+                  Connect your wallet to see who&apos;s really engaging with you!
                 </p>
                 <div className="flex justify-center pt-4">
                   <appkit-button />
