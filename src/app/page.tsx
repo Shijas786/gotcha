@@ -135,10 +135,10 @@ export default function Home() {
         <div className="absolute bottom-[40%] right-[25%] w-48 h-48 bg-white/10 rounded-full blur-xl animate-pulse" style={{ animationDelay: '1s' }}></div>
       </div>
 
-      <main className="relative z-10">
+      <main className="relative z-10 pt-16">
         <Header />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {!effectiveAddress ? (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
               <div className="space-y-6 max-w-2xl px-4 py-12 card backdrop-blur-xl bg-white/40 border-white/40">
@@ -217,18 +217,22 @@ export default function Home() {
                         {data.user.bio && (
                           <p className="text-[var(--text-secondary)] mb-3">{data.user.bio}</p>
                         )}
-                        <div className="flex flex-wrap gap-x-6 gap-y-2">
-                          <div className="flex items-baseline gap-1.5">
-                            <span className="text-xl font-bold text-[var(--text-primary)]">
+                        <div className="flex flex-wrap items-center gap-x-8 gap-y-3 mt-4">
+                          <div className="flex items-center gap-2">
+                            <span className="text-2xl font-black text-[var(--text-primary)]">
                               {data.user.follower_count.toLocaleString()}
                             </span>
-                            <span className="text-sm text-[var(--text-muted)] font-medium">followers</span>
+                            <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">
+                              <span className="mr-1">👥</span>Followers
+                            </span>
                           </div>
-                          <div className="flex items-baseline gap-1.5">
-                            <span className="text-xl font-bold text-[var(--text-primary)]">
+                          <div className="flex items-center gap-2">
+                            <span className="text-2xl font-black text-[var(--text-primary)]">
                               {data.user.following_count.toLocaleString()}
                             </span>
-                            <span className="text-sm text-[var(--text-muted)] font-medium">following</span>
+                            <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">
+                              <span className="mr-1">👀</span>Following
+                            </span>
                           </div>
                         </div>
                       </div>

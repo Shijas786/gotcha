@@ -120,7 +120,8 @@ export async function getFollowers(fid: number, limit: number = 100): Promise<Fa
         }
 
         const data = await response.json()
-        return data.users || []
+        const users = data.users || data.result?.users || []
+        return users
     } catch (error) {
         console.error('Error fetching followers:', error)
         return []
