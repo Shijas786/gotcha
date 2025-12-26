@@ -5,22 +5,13 @@
         "signature": "MHg..."
     },
     "frame": {
-        "version": "next",
+        "version": "1",
+        "name": "Gotcha",
+        "iconUrl": "https://gotcha-jade.vercel.app/favicon.ico",
+        "homeUrl": "https://gotcha-jade.vercel.app",
         "imageUrl": "https://gotcha-jade.vercel.app/og-image.png",
-        "button": {
-            "title": "Open App",
-            "action": {
-                "type": "launch_frame",
-                "name": "Gotcha",
-                "url": "https://gotcha-jade.vercel.app",
-                "splashImageUrl": "https://gotcha-jade.vercel.app/og-image.png",
-                "splashBackgroundColor": "#FF6B9D"
-            }
-        }
-    },
-    "name": "Gotcha",
-    "description": "Track your active followers on Farcaster",
-    "homeUrl": "https://gotcha-jade.vercel.app",
-    "iconUrl": "https://gotcha-jade.vercel.app/favicon.ico",
-    "version": "1.0.0"
+        "buttonTitle": "Launch Gotcha",
+        "splashImageUrl": "https://gotcha-jade.vercel.app/og-image.png",
+        "splashBackgroundColor": "#FF6B9D"
+    }
 }
