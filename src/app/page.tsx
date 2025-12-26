@@ -23,6 +23,8 @@ interface DashboardData {
     total_followers: number
     active_followers: number
     activity_rate: number
+    sample_size: number
+    power_user_count: number
   }
   active_followers: Array<{
     fid: number
@@ -34,6 +36,13 @@ interface DashboardData {
     replies_count: number
     last_active: string
     activity_score: number
+  }>
+  power_users: Array<{
+    fid: number
+    username: string
+    display_name: string
+    pfp_url: string
+    follower_count: number
   }>
 }
 
@@ -53,7 +62,6 @@ export default function Home() {
   const [signedInAddress, setSignedInAddress] = useState<string | null>(null)
   const [signedInFid, setSignedInFid] = useState<number | null>(null)
 
-  // Preferred identifier is FID, fallback to Address
   const effectiveFid = signedInFid
   const effectiveAddress = signedInAddress
   const isAuthorized = !!(effectiveFid || effectiveAddress)
@@ -76,8 +84,6 @@ export default function Home() {
         acceptAuthAddress: true
       })
 
-      console.log('Farcaster Sign In Success:', result)
-
       const recoveredAddress = await recoverMessageAddress({
         message: result.message,
         signature: result.signature as `0x${string}`,
@@ -87,7 +93,6 @@ export default function Home() {
         setSignedInAddress(recoveredAddress)
       }
 
-      // Always prefer FID from context if available after a successful sign-in
       if (fcUser?.fid) {
         setSignedInFid(fcUser.fid)
       }
@@ -127,208 +132,242 @@ export default function Home() {
   useEffect(() => {
     if (isAuthorized) {
       fetchDashboardData()
-    } else {
-      setData(null)
-      setError(null)
     }
   }, [isAuthorized, timeRange, fetchDashboardData])
 
   return (
-    <div className="min-h-screen relative">
-      {/* Decorative Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none select-none z-0">
-        <div className="absolute top-[10%] left-[5%] text-6xl opacity-20 animate-bounce" style={{ animationDuration: '3s' }}>🎯</div>
-        <div className="absolute top-[20%] right-[10%] text-6xl opacity-20 animate-bounce" style={{ animationDuration: '4s' }}>📊</div>
-        <div className="absolute bottom-[20%] left-[15%] text-6xl opacity-20 animate-bounce" style={{ animationDuration: '5s' }}>⚡</div>
-        <div className="absolute bottom-[10%] right-[15%] text-6xl opacity-20 animate-bounce" style={{ animationDuration: '3.5s' }}>🌟</div>
+    <div className="min-h-screen bg-[#020617]">
+      <Header />
 
-        {/* Floating Bubbles */}
-        <div className="absolute top-[30%] left-[20%] w-32 h-32 bg-white/10 rounded-full blur-xl animate-pulse"></div>
-        <div className="absolute bottom-[40%] right-[25%] w-48 h-48 bg-white/10 rounded-full blur-xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-      </div>
-
-      <main className="relative z-10 pt-16">
-        <Header />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {!isAuthorized ? (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-              <div className="space-y-6 max-w-2xl px-4 py-12 card backdrop-blur-xl bg-white/40 border-white/40">
-                <div className="w-24 h-24 bg-gradient-to-br from-pink-400 to-purple-500 rounded-3xl flex items-center justify-center text-5xl mx-auto shadow-2xl transform hover:rotate-12 transition-transform duration-300">
-                  🎯
-                </div>
-                <h2 className="text-5xl font-bold gradient-text pb-2">Welcome to Gotcha</h2>
-                <p className="text-xl text-[var(--text-secondary)] font-medium">
-                  The most vibrant way to track your Farcaster growth.
-                  Sign in to see who&apos;s really engaging with you!
-                </p>
-                <div className="flex flex-col items-center gap-4 pt-4">
-                  {fcUser ? (
-                    <>
-                      <button
-                        onClick={handleSignIn}
-                        className="btn btn-primary text-xl px-10 py-4"
-                      >
-                        Sign in with Farcaster
-                      </button>
-                      <p className="text-sm text-[var(--text-muted)] font-bold">
-                        Logged in as @{fcUser.username}
-                      </p>
-                    </>
-                  ) : (
-                    <div className="card bg-amber-50 border-amber-200 text-amber-800 p-6">
-                      <p className="font-bold mb-2">🚀 Almost there!</p>
-                      <p>Please open this app inside a Farcaster client (Warpcast/Supercast) to sign in.</p>
-                    </div>
-                  )}
-                </div>
-              </div>
+      <main className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        {!isAuthorized ? (
+          <div className="flex flex-col items-center justify-center min-h-[70vh] text-center max-w-3xl mx-auto">
+            <div className="w-20 h-20 rounded-2xl bg-indigo-500/10 flex items-center justify-center mb-8 border border-indigo-500/20 shadow-[0_0_50px_-12px_rgba(99,102,241,0.5)]">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2Z" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" />
+                <path d="M12 8V12L15 15" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </div>
-          ) : (
-            <>
-              {loading && <LoadingSpinner />}
+            <h1 className="text-6xl font-black text-white mb-6 tracking-tight leading-tight">
+              Smarter <span className="text-indigo-500">Growth</span> <br />Insights for Farcaster
+            </h1>
+            <p className="text-xl text-slate-400 mb-10 font-medium max-w-xl mx-auto leading-relaxed">
+              Verify your most active followers, detect power users, and understand your community engagement at a glance.
+            </p>
 
-              {error && (
-                <div className="card bg-red-50 border-red-200 text-center py-12">
-                  <span className="text-6xl mb-4 block">😕</span>
-                  <h3 className="text-xl font-semibold text-red-800 mb-2">Oops!</h3>
-                  <p className="text-red-600 mb-2">{error}</p>
-                  {error.includes('No Farcaster profile') && (
-                    <p className="text-sm text-red-500 mt-2">
-                      💡 Make sure your wallet is linked to a Farcaster account
-                    </p>
-                  )}
-                  <button
-                    onClick={fetchDashboardData}
-                    className="btn btn-primary mt-4"
-                  >
-                    Try Again
+            <div className="bg-slate-900/50 p-8 rounded-3xl border border-white/5 backdrop-blur-xl w-full max-w-md">
+              {fcUser ? (
+                <div className="space-y-4">
+                  <button onClick={handleSignIn} className="btn btn-primary w-full py-4 text-lg">
+                    Sign In with Farcaster
                   </button>
+                  <p className="text-sm text-slate-500 font-medium">Logged in as @{fcUser.username}</p>
+                </div>
+              ) : (
+                <div className="text-slate-400 py-4 font-medium flex items-center justify-center gap-3">
+                  <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                  Please open in Warpcast or Supercast
                 </div>
               )}
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {loading && !data && (
+              <div className="flex items-center justify-center py-20">
+                <LoadingSpinner />
+              </div>
+            )}
 
-              {!loading && !error && data && (
-                <>
-                  {/* Profile Header */}
-                  <div className="card mb-8">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+            {error && (
+              <div className="card border-red-500/20 bg-red-500/5 py-12 text-center">
+                <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
+                  ❌
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">Analysis Failed</h3>
+                <p className="text-red-400/80 mb-6">{error}</p>
+                <button onClick={fetchDashboardData} className="btn bg-white/10 hover:bg-white/20 text-white border border-white/10">
+                  Try Again
+                </button>
+              </div>
+            )}
+
+            {data && (
+              <>
+                {/* Profile Header */}
+                <div className="card relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
+                    <div className="relative">
                       <Image
                         src={data.user.pfp_url || '/default-avatar.svg'}
                         alt={data.user.display_name}
-                        width={96}
-                        height={96}
+                        width={120}
+                        height={120}
                         className="avatar"
                       />
-                      <div className="flex-1">
-                        <h2 className="text-3xl font-bold text-[var(--text-primary)] mb-1">
-                          {data.user.display_name}
-                        </h2>
-                        <p className="text-lg text-[var(--text-secondary)] mb-2">
-                          @{data.user.username}
-                        </p>
-                        {data.user.bio && (
-                          <p className="text-[var(--text-secondary)] mb-3">{data.user.bio}</p>
-                        )}
-                        <div className="flex flex-wrap items-center gap-x-8 gap-y-3 mt-4">
-                          <div className="flex items-center gap-2">
-                            <span className="text-2xl font-black text-[var(--text-primary)]">
-                              {data.user.follower_count.toLocaleString()}
-                            </span>
-                            <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">
-                              <span className="mr-1">👥</span>Followers
-                            </span>
+                      <div className="absolute -bottom-2 -right-2 bg-[#020617] p-1.5 rounded-xl border border-white/10 shadow-xl">
+                        <div className="w-6 h-6 rounded-lg bg-indigo-500 flex items-center justify-center text-[10px] text-white font-bold">
+                          FC
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="text-center md:text-left flex-1">
+                      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+                        <div>
+                          <h2 className="text-4xl font-black text-white mb-1 tracking-tight">
+                            {data.user.display_name}
+                          </h2>
+                          <p className="text-indigo-400 font-bold tracking-wide">
+                            @{data.user.username}
+                          </p>
+                        </div>
+                        <div className="flex gap-4 md:ml-auto">
+                          <div className="bg-white/5 border border-white/10 rounded-2xl px-6 py-3 text-center min-w-[120px]">
+                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Followers</p>
+                            <p className="text-xl font-black text-white">{data.user.follower_count.toLocaleString()}</p>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-2xl font-black text-[var(--text-primary)]">
-                              {data.user.following_count.toLocaleString()}
-                            </span>
-                            <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">
-                              <span className="mr-1">👀</span>Following
-                            </span>
+                          <div className="bg-white/5 border border-white/10 rounded-2xl px-6 py-3 text-center min-w-[120px]">
+                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Following</p>
+                            <p className="text-xl font-black text-white">{data.user.following_count.toLocaleString()}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-slate-400 text-lg max-w-2xl font-medium leading-relaxed">
+                        {data.user.bio || 'Professional Farcaster user exploring the ecosystem.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Dashboard Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Stats & Insights */}
+                  <div className="lg:col-span-2 space-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <StatsCard
+                        title="Real Community"
+                        value={data.stats.total_followers.toLocaleString()}
+                        icon="👥"
+                        subtitle="Total followers on-chain"
+                      />
+                      <StatsCard
+                        title="Active Audience"
+                        value={data.stats.active_followers.toLocaleString()}
+                        icon="⚡"
+                        subtitle={`Analyzed ${data.stats.sample_size} recent followers`}
+                      />
+                      <StatsCard
+                        title="Engagement"
+                        value={`${data.stats.activity_rate}%`}
+                        icon="📈"
+                        subtitle="Engagement rate in sample"
+                      />
+                      <StatsCard
+                        title="Influencers"
+                        value={data.stats.power_user_count}
+                        icon="🌟"
+                        subtitle="Power users in your network"
+                      />
+                    </div>
+
+                    {/* Top Active Followers Section */}
+                    <div>
+                      <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-2xl font-bold text-white tracking-tight flex items-center gap-3">
+                          <span className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">🔥</span>
+                          Top Engagers
+                        </h3>
+                        <div className="flex gap-1.5 p-1 bg-slate-900 border border-white/5 rounded-xl">
+                          {[7, 14, 30].map((days) => (
+                            <button
+                              key={days}
+                              onClick={() => setTimeRange(days as 7 | 14 | 30)}
+                              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${timeRange === days
+                                ? 'bg-indigo-500 text-white shadow-lg'
+                                : 'text-slate-400 hover:text-white'
+                                }`}
+                            >
+                              {days}d
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {data.active_followers.slice(0, 10).map((follower) => (
+                          <FollowerCard key={follower.fid} follower={follower} />
+                        ))}
+                        {data.active_followers.length === 0 && (
+                          <div className="col-span-2 card border-dashed border-white/10 bg-transparent py-12 text-center text-slate-500 font-medium">
+                            No recent activity found in the selected time range.
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Sidebar - Power Users */}
+                  <div className="space-y-8">
+                    <div className="card h-full">
+                      <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                        <span className="w-7 h-7 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-500 text-sm">👑</span>
+                        Power Followers
+                      </h3>
+                      <div className="space-y-5">
+                        {data.power_users.map((pu) => (
+                          <div key={pu.fid} className="flex items-center gap-4 group cursor-pointer hover:bg-white/5 p-3 rounded-2xl transition-colors -mx-3">
+                            <Image
+                              src={pu.pfp_url || '/default-avatar.svg'}
+                              alt={pu.username}
+                              width={48}
+                              height={48}
+                              className="rounded-xl border border-white/10"
+                            />
+                            <div className="flex-1 overflow-hidden">
+                              <p className="text-sm font-bold text-white truncate">{pu.display_name}</p>
+                              <p className="text-xs text-indigo-400 font-medium">@{pu.username}</p>
+                              <p className="text-[10px] text-slate-500 mt-1 uppercase font-bold tracking-tight">
+                                {pu.follower_count.toLocaleString()} followers
+                              </p>
+                            </div>
+                            <div className="w-8 h-8 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                              →
+                            </div>
+                          </div>
+                        ))}
+                        {data.power_users.length === 0 && (
+                          <p className="text-sm text-slate-500 font-medium text-center py-8">
+                            No power users found in the sample.
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="mt-8 pt-6 border-t border-white/5">
+                        <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Engagement Tips</h4>
+                        <div className="space-y-3">
+                          <div className="p-3 bg-indigo-500/5 rounded-xl border border-indigo-500/10 text-xs text-slate-400 font-medium">
+                            💡 Replying to <span className="text-indigo-400">@{data.power_users[0]?.username || 'power users'}</span> can help boost your reach.
+                          </div>
+                          <div className="p-3 bg-purple-500/5 rounded-xl border border-purple-500/10 text-xs text-slate-400 font-medium">
+                            ⚡ Your engagement rate is <span className="text-purple-400">{data.stats.activity_rate}%</span>. Try casting more in niches!
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-
-                  {/* Time Range Filter */}
-                  <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-2xl font-bold text-[var(--text-primary)]">
-                      📊 Activity Insights
-                    </h3>
-                    <div className="flex gap-2">
-                      {[7, 14, 30].map((days) => (
-                        <button
-                          key={days}
-                          onClick={() => setTimeRange(days as 7 | 14 | 30)}
-                          className={`px-4 py-2 rounded-full font-semibold text-sm transition-all ${timeRange === days
-                            ? 'bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] text-white shadow-md'
-                            : 'bg-white text-[var(--text-secondary)] border-2 border-[var(--border)] hover:border-[var(--primary)]'
-                            }`}
-                        >
-                          {days} days
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Stats Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <StatsCard
-                      title="Total Followers"
-                      value={data.stats.total_followers.toLocaleString()}
-                      icon="👥"
-                      color="primary"
-                      subtitle="Your community size"
-                    />
-                    <StatsCard
-                      title="Active Followers"
-                      value={data.stats.active_followers.toLocaleString()}
-                      icon="⚡"
-                      color="secondary"
-                      subtitle={`Last ${timeRange} days`}
-                    />
-                    <StatsCard
-                      title="Activity Rate"
-                      value={`${data.stats.activity_rate}%`}
-                      icon="📈"
-                      color="accent"
-                      subtitle="Engagement percentage"
-                    />
-                  </div>
-
-                  {/* Active Followers List */}
-                  <div className="mb-6">
-                    <h3 className="text-2xl font-bold text-[var(--text-primary)] mb-4">
-                      🌟 Top Active Followers
-                    </h3>
-                    {data.active_followers.length === 0 ? (
-                      <div className="card text-center py-12">
-                        <span className="text-6xl mb-4 block">🔍</span>
-                        <p className="text-[var(--text-secondary)]">
-                          No active followers found in the last {timeRange} days
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        {data.active_followers.map((follower) => (
-                          <FollowerCard key={follower.fid} follower={follower} />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
-            </>
-          )}
-        </div>
+                </div>
+              </>
+            )}
+          </div>
+        )}
       </main>
 
-      {/* Footer */}
-      <footer className="border-t-2 border-[var(--border)] mt-20 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-[var(--text-muted)]">
-            Built with 💜 for the Farcaster community
+      <footer className="border-t border-white/5 py-10 bg-[#020617]">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p className="text-slate-500 text-sm font-semibold tracking-wide flex items-center justify-center gap-2">
+            Built for the <span className="text-indigo-400">Farcaster</span> economy
           </p>
         </div>
       </footer>

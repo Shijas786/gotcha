@@ -34,6 +34,11 @@ export async function GET(request: NextRequest) {
         // Get followers
         const followers = await getFollowers(user.fid, 100)
 
+        // Identify Power Users (e.g., more than 2k followers)
+        const powerUsers = followers
+            .filter(f => f.follower_count > 2000)
+            .slice(0, 5)
+
         // Analyze follower activity
         const activeFollowers = await analyzeFollowerActivity(followers, days)
 
@@ -48,13 +53,16 @@ export async function GET(request: NextRequest) {
                 bio: user.bio
             },
             stats: {
-                total_followers: followers.length,
+                total_followers: user.follower_count, // Use real count
                 active_followers: activeFollowers.length,
                 activity_rate: followers.length > 0
                     ? Math.round((activeFollowers.length / followers.length) * 100)
-                    : 0
+                    : 0,
+                sample_size: followers.length,
+                power_user_count: powerUsers.length
             },
-            active_followers: activeFollowers
+            active_followers: activeFollowers,
+            power_users: powerUsers
         })
     } catch (error) {
         console.error('Error fetching dashboard data:', error)
