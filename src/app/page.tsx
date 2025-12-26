@@ -51,9 +51,12 @@ export default function Home() {
   const [timeRange, setTimeRange] = useState<7 | 14 | 30>(7)
   const [fcUser, setFcUser] = useState<FarcasterUser | null>(null)
   const [signedInAddress, setSignedInAddress] = useState<string | null>(null)
+  const [signedInFid, setSignedInFid] = useState<number | null>(null)
 
-  // Exclusive Farcaster Sign In address
+  // Preferred identifier is FID, fallback to Address
+  const effectiveFid = signedInFid
   const effectiveAddress = signedInAddress
+  const isAuthorized = !!(effectiveFid || effectiveAddress)
 
   useEffect(() => {
     const init = async () => {
@@ -83,19 +86,28 @@ export default function Home() {
       if (recoveredAddress) {
         setSignedInAddress(recoveredAddress)
       }
+
+      // Always prefer FID from context if available after a successful sign-in
+      if (fcUser?.fid) {
+        setSignedInFid(fcUser.fid)
+      }
     } catch (err) {
       console.error('Farcaster Sign In Failed:', err)
     }
   }
 
   const fetchDashboardData = useCallback(async () => {
-    if (!effectiveAddress) return
+    if (!isAuthorized) return
 
     setLoading(true)
     setError(null)
 
     try {
-      const response = await fetch(`/api/dashboard?address=${effectiveAddress}&days=${timeRange}`)
+      const queryParams = effectiveFid
+        ? `fid=${effectiveFid}`
+        : `address=${effectiveAddress}`
+
+      const response = await fetch(`/api/dashboard?${queryParams}&days=${timeRange}`)
 
       if (!response.ok) {
         const errorData = await response.json()
@@ -110,16 +122,16 @@ export default function Home() {
     } finally {
       setLoading(false)
     }
-  }, [effectiveAddress, timeRange])
+  }, [isAuthorized, effectiveFid, effectiveAddress, timeRange])
 
   useEffect(() => {
-    if (effectiveAddress) {
+    if (isAuthorized) {
       fetchDashboardData()
     } else {
       setData(null)
       setError(null)
     }
-  }, [effectiveAddress, timeRange, fetchDashboardData])
+  }, [isAuthorized, timeRange, fetchDashboardData])
 
   return (
     <div className="min-h-screen relative">
@@ -139,7 +151,7 @@ export default function Home() {
         <Header />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {!effectiveAddress ? (
+          {!isAuthorized ? (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
               <div className="space-y-6 max-w-2xl px-4 py-12 card backdrop-blur-xl bg-white/40 border-white/40">
                 <div className="w-24 h-24 bg-gradient-to-br from-pink-400 to-purple-500 rounded-3xl flex items-center justify-center text-5xl mx-auto shadow-2xl transform hover:rotate-12 transition-transform duration-300">
