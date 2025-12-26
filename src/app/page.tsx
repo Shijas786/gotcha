@@ -39,7 +39,7 @@ interface DashboardData {
 
 interface FarcasterUser {
   fid: number;
-  username: string;
+  username?: string;
   displayName?: string;
   pfpUrl?: string;
 }
