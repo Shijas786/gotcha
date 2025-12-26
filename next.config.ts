@@ -15,6 +15,22 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '**.googleusercontent.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'wrp.it',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.ipfs.w3s.link',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ipfs.io',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.farcaster.xyz',
+      },
     ],
   },
   webpack: (config) => {

@@ -4,17 +4,19 @@
 export default function Header() {
 
     return (
-        <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/60 border-b border-white/20 shadow-sm">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-20">
-                    {/* Logo */}
-                    <div className="flex items-center gap-4 group cursor-pointer">
-                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#FF6B9D] via-[#4ECDC4] to-[#FFE66D] flex items-center justify-center shadow-xl transform group-hover:rotate-6 transition-transform duration-300">
-                            <span className="text-3xl">🎯</span>
+        <header className="relative z-50 bg-white/80 backdrop-blur-md border-b border-white/20 shadow-sm pt-[env(safe-area-inset-top)]">
+            <div className="max-w-7xl mx-auto px-4">
+                <div className="flex items-center justify-between py-4">
+                    {/* Logo Section */}
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FF6B9D] via-[#4ECDC4] to-[#FFE66D] flex items-center justify-center shadow-lg">
+                            <span className="text-2xl">🎯</span>
                         </div>
-                        <div>
-                            <h1 className="text-3xl font-black gradient-text tracking-tight" style={{ fontFamily: 'Fredoka, sans-serif' }}>Gotcha</h1>
-                            <p className="text-xs font-bold text-[var(--accent-dark)] uppercase tracking-widest opacity-80">Growth Insights</p>
+                        <div className="flex flex-col">
+                            <h1 className="text-2xl font-black text-[#2D3748] tracking-tight leading-none" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+                                Gotcha
+                            </h1>
+                            <p className="text-[10px] font-bold text-[#FF6B9D] uppercase tracking-widest mt-1">Growth Insights</p>
                         </div>
                     </div>
 

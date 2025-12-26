@@ -217,18 +217,18 @@ export default function Home() {
                         {data.user.bio && (
                           <p className="text-[var(--text-secondary)] mb-3">{data.user.bio}</p>
                         )}
-                        <div className="flex gap-4">
-                          <div>
-                            <span className="font-bold text-[var(--text-primary)]">
+                        <div className="flex flex-wrap gap-x-6 gap-y-2">
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="text-xl font-bold text-[var(--text-primary)]">
                               {data.user.follower_count.toLocaleString()}
                             </span>
-                            <span className="text-[var(--text-muted)] ml-1">followers</span>
+                            <span className="text-sm text-[var(--text-muted)] font-medium">followers</span>
                           </div>
-                          <div>
-                            <span className="font-bold text-[var(--text-primary)]">
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="text-xl font-bold text-[var(--text-primary)]">
                               {data.user.following_count.toLocaleString()}
                             </span>
-                            <span className="text-[var(--text-muted)] ml-1">following</span>
+                            <span className="text-sm text-[var(--text-muted)] font-medium">following</span>
                           </div>
                         </div>
                       </div>
