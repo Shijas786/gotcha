@@ -37,13 +37,20 @@ interface DashboardData {
   }>
 }
 
+interface FarcasterUser {
+  fid: number;
+  username: string;
+  displayName?: string;
+  pfpUrl?: string;
+}
+
 export default function Home() {
-  const { address, isConnected } = useAccount()
+  const { address } = useAccount()
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [timeRange, setTimeRange] = useState<7 | 14 | 30>(7)
-  const [fcUser, setFcUser] = useState<any>(null)
+  const [fcUser, setFcUser] = useState<FarcasterUser | null>(null)
   const [signedInAddress, setSignedInAddress] = useState<string | null>(null)
 
   // Use the connected wallet address or the signed-in address from Farcaster
