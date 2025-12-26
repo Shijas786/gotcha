@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useAccount } from 'wagmi'
 import { sdk } from '@farcaster/frame-sdk'
+import { recoverMessageAddress } from 'viem'
 import Header from '@/components/Header'
 import StatsCard from '@/components/StatsCard'
 import FollowerCard from '@/components/FollowerCard'
@@ -76,8 +77,13 @@ export default function Home() {
 
       console.log('Farcaster Sign In Success:', result)
 
-      if (result.address) {
-        setSignedInAddress(result.address)
+      const recoveredAddress = await recoverMessageAddress({
+        message: result.message,
+        signature: result.signature as `0x${string}`,
+      })
+
+      if (recoveredAddress) {
+        setSignedInAddress(recoveredAddress)
       }
     } catch (err) {
       console.error('Farcaster Sign In Failed:', err)
